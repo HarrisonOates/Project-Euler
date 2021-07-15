@@ -1,0 +1,91 @@
+%--- Project Euler 317 formula derivation.
+\documentclass[a4paper,12pt]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+
+% Font & Document Look
+\usepackage{wrapfig}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[parfill]{parskip}
+\usepackage{dirtytalk}
+\usepackage{csquotes}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[]{microtype}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{verbatim}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{gensymb}
+% References
+\usepackage[round,comma, authoryear]{natbib}
+\usepackage{har2nat}
+\bibliographystyle{agsm}
+
+\newcommand{\ivec}{\mathbf{\hat{i}}}
+\newcommand{\jvec}{\mathbf{\hat{j}}}
+\begin{document}
+This document is a derivation of the formula used in Euler317.
+
+We begin with a vector description of projectile motion:
+   
+\[\vec{r} = u t\cos\theta \ivec + ut\sin\theta + \frac{1}{2}at^2 + h \jvec\]
+where \(u, \theta, h, t\) are initial velocity, launch angle, height from which it is launched and time elapsed respectively.
+We find that:
+\begin{align}
+    x &= u t\cos\theta \\
+    y &= ut\sin\theta + \frac{1}{2}at^2 + h 
+\end{align}
+These can be rearranged and substituted in for \(t\).
+\begin{align*}
+    y &= u\left(\frac{x}{u\cos\theta}\right)\sin\theta + \frac{1}{2}a\left(\frac{x}{u\cos\theta}\right)^2 + h \\
+    y &= \frac{x\sin\theta}{\cos\theta} + \frac{ax^2}{2 u^2 \cos^2\theta} + h \\
+    y &= x \tan \theta - \frac{ax^2}{2u^2}\sec^2 \theta + h
+\end{align*}
+As acceleration is due to gravity, \(a = g\), and to make it look nice let \(u = v\).
+Hence the final equation is
+\[y = x \tan \theta - \frac{gx^2}{2v^2}\sec^2 \theta + h.\]
+This is all well and good, but we must find an `envelope' that encompasses all parabolas for values of \(\theta\).
+Wkipedia says that the envelope of the family of curves parametised by \(t\) is given as the set of points where 
+\[F(t,x,y) = \frac{\delta F}{\delta t}(t,x,y) = 0.\]
+We have \(F(\theta,x,y) = x \tan \theta - \frac{gx^2}{2v^2}\sec^2 \theta + h-y\), hence:
+\[
+    \frac{\delta F}{\delta \theta}(\theta,x,y) = x \sec^2 \theta + \frac{gx^2}{v^2}\sec^2\theta\tan \theta 
+\]
+by applying the chain rule. Solving \(\frac{\delta F}{\delta \theta} = 0\):
+\begin{align*}
+    0 &= x \sec^2 \theta + \frac{gx^2}{v^2}\sec^2\theta\tan \theta \\
+    0 &= \frac{x}{v^2}\sec^2 \theta \left(v^2 - gx\tan \theta\right) \\
+    \therefore \tan \theta &= \frac{v^2}{gx}
+\end{align*}
+Using the trig identity \(\sec^2x = 1 + \tan^2 x\), we find that \(\sec^2x = \frac{g^2x^2+v^4}{g^2x^2}\).
+Substituting into \(F(\theta,x,y) = 0\):
+\begin{align}
+    y &= \frac{v^2}{g} -\frac{gx^2}{2v^2}\left(\frac{g^2x^2+v^4}{g^2x^2}\right) + h \nonumber\\
+    y  &= \frac{v^2}{g} - \frac{g^2x^2+v^4}{2v^2g} + h\nonumber\\
+    y  &= \frac{v^2}{2g} - \frac{gx^2}{2v^2} +h \label{eq:envelope}
+\end{align}
+
+To find the solid of revolution around the y-axis:
+\[V = \pi\int^a_b [f(y)]^2 \space dy \]
+
+Using equation~\ref{eq:envelope}:
+\begin{align*}
+    y  &= \frac{v^2}{2g} - \frac{gx^2}{2v^2} + h \\
+    y - \frac{v^2}{2g} - h &= - \frac{gx^2}{2v^2} \\
+    \frac{v^2}{g}(y-\frac{v^2}{2g}-h) &= x^2 \\
+    x &= \sqrt{\frac{v^2}{g}(y-\frac{v^2}{2g}-h)}
+\end{align*}
+
+The bounds on the integral will be \(0\) and \(f(0)\), where \(f(x)\) is equation~\ref{eq:envelope}.
+
+Using Julia and plugging in \(\{v,g, h\} = \{20, 9.81, 8\}\)
+\end{document}
